@@ -47,14 +47,16 @@ class forseplus:
         self.gauss_ss_ps_12 = np.load(dir_data + 'maps_cls/gauss_small_scales_12_over_80_power_spectra.npy') #[2, 174, 49, 1, 25] Q, U
         self.gauss_ss_mean_std_12 = np.load(dir_data + 'maps_cls/gauss_small_scales_12_over_80_mean_and_std.npy') #[4, 174, 49] Q_mean, Q_std, U_mean, U_std
 
-        model_Q_12amin = dir_data + 'models/model_all_h5_snr_1_Q11'
-        model_U_12amin = dir_data + 'models/model_all_h5_snr_1_U12'
+        model_Q_12amin = dir_data + 'models/model_all_h5_snr_1_Q11.h5'
+        model_U_12amin = dir_data + 'models/model_all_h5_snr_1_U12.h5'
 
         ss_I = np.load(dir_data + 'maps_cls/GNILC_Thr12_Qlr80_20x20deg_Npix320_full_sky_adaptive.npy', allow_pickle=True)[0, 0:348]
         self.output12 = post_training_12(ss_I, self.Ls_Q80amin, self.Ls_U80amin, MF = plot_MF)
         self.model_Q = tf.keras.models.load_model(model_Q_12amin, compile = False)
         self.model_U = tf.keras.models.load_model(model_U_12amin, compile = False)
-        
+        #self.model_Q = tf.keras.layers.TFSMLayer(model_Q_12amin, call_endpoint="serving_default")
+        #self.model_U = tf.keras.layers.TFSMLayer(model_U_12amin, call_endpoint="serving_default")
+
         self.return_12 = return_12
         if return_12:
             self.recom_12 = recom(npix = 320, pixelsize = 3.75, overlap = 2, nside = 2048, 
@@ -71,8 +73,8 @@ class forseplus:
             # Ls_U = np.load(dir_data + 'maps_cls/GNILC_Thr12_Ulr80_20x20deg_Npix320_full_sky_adaptive.npy')[1, 0:174]
 
             # data 3.0G
-            model_Q_3amin =  dir_data + 'models/model_3amin_696_patches_Q85'
-            model_U_3amin =  dir_data + 'models/model_3amin_696_patches_U396'
+            model_Q_3amin =  dir_data + 'models/model_3amin_696_patches_Q85.h5'
+            model_U_3amin =  dir_data + 'models/model_3amin_696_patches_U396.h5'
 
             self.output3 = post_training_3(ss_I, MF = plot_MF)
             self.model_Q_3 = tf.keras.models.load_model(model_Q_3amin, compile = False)
